@@ -1,0 +1,12 @@
+title: USDM Reported County Aggregations
+description: Archive of weekly US Drought Monitor (USDM) data aggregated to county boundaries as reported by the USDM
+author: R. Kyle Bocinsky
+url: "https://strong-fsa.github.io/usdm-counties-reported/"  # Your GitHub Pages URL
+baseurl: "/usdm-counties-reported"
+
+remote_theme: jekyll/minima
+plugins:
+  - jekyll-remote-theme
+
+# minima:
+#   skin: classic

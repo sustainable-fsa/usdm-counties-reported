@@ -148,7 +148,8 @@ usdm_get_dates() %>%
           usdm_class = 
             factor(usdm_class,
                    levels = c("None", paste0("D", 0:4)),
-                   ordered = TRUE)
+                   ordered = TRUE),
+          usdm_percent = usdm_percent/100
         ) |>
         dplyr::select(STATEFP, State, COUNTYFP, County, CountyLSAD, 
                       usdm_date, usdm_class, usdm_percent) |>

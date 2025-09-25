@@ -18,7 +18,8 @@ pak::pak(
     "tigris",
     "rmapshaper",
     "furrr",
-    "future.mirai"
+    "future.mirai",
+    "httr2"
   )
 )
 

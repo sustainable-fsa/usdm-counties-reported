@@ -13,7 +13,7 @@ editor_options:
 
 This repository is an archive weekly US Drought Monitor (USDM) data aggregated to the county level as reported by the USDM.
 
-<a href="https://sustainable-fsa.github.io/usdm-counties-fsa-lfp/manifest.html" target="_blank">📂 View the US Drought Monitor county aggregation archive listing here.</a>
+<a href="https://sustainable-fsa.github.io/usdm-counties-reported/manifest.html" target="_blank">📂 View the US Drought Monitor county aggregation archive listing here.</a>
 
 The county data archived in this repository were acquired via API request by R. Kyle Bocinsky (Montana Climate Office) and are updated weekly. API documentation is available at <a href="https://droughtmonitor.unl.edu/DmData/DataDownload/WebServiceInfo.aspx" target="_blank">.
 

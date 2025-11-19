@@ -50,10 +50,10 @@ While USDM drought class boundaries are developed without regard to political bo
 
 ## 🗂 Directory Structure
 
-- `usdm-counties-reported.R`: R script that downloads weekly USDM data aggregated to county boundaries.
-- `usdm-counties-reported.parquet`: Processed county-level USDM data in a single parquet file.
-- `data/`: Directory containing processed county-level USDM data.
-- `README.Rmd`: This README file, providing an overview and usage instructions.
+- `<usdm-counties-reported.R>`: R script that downloads weekly USDM data aggregated to county boundaries.
+- `<usdm-counties-reported.parquet>`: Processed county-level USDM data in a single parquet file.
+- `<data/>`: Directory containing processed county-level USDM data.
+- `<README.Rmd>`: This README file, providing an overview and usage instructions.
 
 ---
 

@@ -41,7 +41,7 @@ dir.create(
 ## Load the FSA LFP county boundary data
 if(!file.exists("data/fsa-lfp-counties.parquet")){
   sf::read_sf(
-    "https://sustainable-fsa.github.io/fsa-lfp-counties/fsa-lfp-counties.parquet"
+    "https://sustainable-fsa.com/fsa-lfp-counties/fsa-lfp-counties.parquet"
   ) %>%
     dplyr::transmute(STATEFP = StateFIPS,
                      COUNTYFP = stringr::str_sub(CountyFIPS, start = 3L)) %>%
@@ -79,7 +79,7 @@ counties <-
 
 states <-
   sf::read_sf(
-    "https://sustainable-fsa.github.io/fsa-lfp-counties/fsa-lfp-counties.parquet"
+    "https://sustainable-fsa.com/fsa-lfp-counties/fsa-lfp-counties.parquet"
   ) %$%
   StateAbbr %>%
   unique() %>%

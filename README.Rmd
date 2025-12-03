@@ -13,7 +13,7 @@ editor_options:
 
 This repository is an archive of weekly US Drought Monitor (USDM) data aggregated to the county level as reported by the USDM.
 
-<a href="https://sustainable-fsa.github.io/usdm-counties-reported/manifest.html" target="_blank">📂 View the US Drought Monitor county aggregation archive listing here.</a>
+<a href="https://sustainable-fsa.com/usdm-counties-reported/manifest.html" target="_blank">📂 View the US Drought Monitor county aggregation archive listing here.</a>
 
 The county data archived in this repository were acquired via API request by R. Kyle Bocinsky (Montana Climate Office) and are updated weekly. API documentation is available at <a href="https://droughtmonitor.unl.edu/DmData/DataDownload/WebServiceInfo.aspx" target="_blank">https://droughtmonitor.unl.edu/DmData/DataDownload/WebServiceInfo.aspx</a>.
 
@@ -150,7 +150,7 @@ ggplot(counties) +
 
 **Citation format** (suggested):
 
-> US Drought Monitor authors and R. Kyle Bocinsky YYYY. *Archive of US Drought Monitor Weekly Maps Aggregated to County Boundaries as Reported by the US Drought Monitor*. Data processed, curated, and archived by R. Kyle Bocinsky, Montana Climate Office. Accessed via GitHub archive, YYYY-MM-DD. https://sustainable-fsa.github.io/usdm-counties-fsa-lfp/
+> US Drought Monitor authors and R. Kyle Bocinsky YYYY. *Archive of US Drought Monitor Weekly Maps Aggregated to County Boundaries as Reported by the US Drought Monitor*. Data processed, curated, and archived by R. Kyle Bocinsky, Montana Climate Office. Accessed via GitHub archive, YYYY-MM-DD. https://sustainable-fsa.com/usdm-counties-fsa-lfp/
 
 **Acknowledgments**:
 

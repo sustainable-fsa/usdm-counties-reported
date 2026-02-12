@@ -52,7 +52,8 @@ if(!file.exists("data/fsa-lfp-counties.parquet")){
         sf::st_drop_geometry()
     ) %>%
     dplyr::mutate(Area = sf::st_area(geometry)) %>%
-    dplyr::select(STATEFP, 
+    dplyr::select(GEOID,
+                  STATEFP, 
                   State = STATE_NAME, 
                   COUNTYFP, 
                   County = NAME, 
@@ -71,7 +72,7 @@ counties <-
   sf::read_sf("data/fsa-lfp-counties.parquet") %>%
   sf::st_drop_geometry() |>
   dplyr::transmute(
-    FIPS = paste0(STATEFP, COUNTYFP),
+    FIPS = GEOID,
     STATEFP, 
     State, 
     COUNTYFP, 
@@ -154,9 +155,9 @@ usdm_get_dates() %>%
                    ordered = TRUE),
           usdm_percent = usdm_percent/100
         ) |>
-        dplyr::select(STATEFP, State, COUNTYFP, County, CountyLSAD, 
+        dplyr::select(GEOID = FIPS, STATEFP, State, COUNTYFP, County, CountyLSAD, 
                       usdm_date, usdm_class, usdm_percent) |>
-        dplyr::arrange(STATEFP, COUNTYFP, usdm_date, usdm_class) |>
+        dplyr::arrange(GEOID, usdm_date, usdm_class) |>
           arrow::write_parquet(sink = outfile,
                                version = "latest",
                                compression = "zstd",

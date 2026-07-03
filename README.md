@@ -2,7 +2,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 [![Static
-Badge](https://img.shields.io/badge/Repo-sustainable--fsa%2Fusdm--counties--reported-magenta?style=flat)](https://github.com/sustainable-fsa/usdm-counties-fsa-lfp/)
+Badge](https://img.shields.io/badge/Repo-sustainable--fsa%2Fusdm--counties--reported-magenta?style=flat)](https://github.com/sustainable-fsa/usdm-counties-reported/)
 ![Last
 Update](https://img.shields.io/github/last-commit/sustainable-fsa/usdm-counties-reported?style=flat)
 ![Repo

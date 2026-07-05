@@ -32,6 +32,13 @@ library(arrow)
 library(furrr)
 library(future.mirai)
 
+source("R/s3-archive.R")
+s3_preflight()
+s3_bucket_name <- Sys.getenv("S3_BUCKET", unset = "sustainable-fsa")
+s3_prefix      <- Sys.getenv("S3_PREFIX", unset = "usdm-counties-reported")
+## Pull prior archive state so incremental guards see existing outputs
+s3_pull(s3_bucket_name, paste0(s3_prefix, "/data"), "data")
+
 sf::sf_use_s2(TRUE)
 
 dir.create(
@@ -43,7 +50,7 @@ dir.create(
 ## Load the FSA LFP county boundary data
 if(!file.exists("data/fsa-lfp-counties.parquet")){
   sf::read_sf(
-    "https://sustainable-fsa.com/fsa-lfp-counties/fsa-lfp-counties.parquet"
+    "https://data.sustainable-fsa.com/fsa-lfp-counties/fsa-lfp-counties.parquet"
   ) %>%
     dplyr::transmute(STATEFP = StateFIPS,
                      COUNTYFP = stringr::str_sub(CountyFIPS, start = 3L)) %>%
@@ -82,7 +89,7 @@ counties <-
 
 states <-
   sf::read_sf(
-    "https://sustainable-fsa.com/fsa-lfp-counties/fsa-lfp-counties.parquet"
+    "https://data.sustainable-fsa.com/fsa-lfp-counties/fsa-lfp-counties.parquet"
   ) %$%
   StateAbbr %>%
   unique() %>%
@@ -92,7 +99,7 @@ states <-
 
 ## Get the current list of USDM dates
 usdm_get_dates <-
-  function(as_of = lubridate::today()){
+  function(as_of = lubridate::today("America/Denver")){
     as_of %<>%
       lubridate::as_date()
     
@@ -213,5 +220,18 @@ generate_tree_flat <- function(
 # Generate the flat index
 generate_tree_flat()
 
-# Knit the readme
-rmarkdown::render("README.Rmd")
+## ---- Publish to S3 ---------------------------------------------------
+s3_push(s3_bucket_name, paste0(s3_prefix, "/data"), "data", delete = TRUE)
+s3_put(s3_bucket_name, paste0(s3_prefix, "/usdm-counties-reported.parquet"),
+       "usdm-counties-reported.parquet",
+       content_type = "application/vnd.apache.parquet",
+       cache_control = "max-age=3600")
+s3_put(s3_bucket_name, paste0(s3_prefix, "/manifest.json"), "manifest.json",
+       content_type = "application/json",
+       cache_control = "max-age=3600")
+s3_verify(s3_bucket_name, paste0(s3_prefix, "/data"), "data",
+          allow_extra = character(0))
+s3_write_manifest(s3_bucket_name, s3_prefix)
+cf_invalidate(c(paste0("/", s3_prefix, "/usdm-counties-reported.parquet"),
+                paste0("/", s3_prefix, "/manifest.json"),
+                paste0("/", s3_prefix, "/_manifest.txt")))

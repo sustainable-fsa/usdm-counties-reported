@@ -72,7 +72,7 @@ library(rmapshaper) # For innerlines function
 ## Get latest USDM data
 latest <-
   jsonlite::fromJSON(
-    "manifest.json"
+    "https://data.sustainable-fsa.com/usdm-counties-reported/manifest.json"
   )$path |>
   stringr::str_subset("parquet") |>
   stringr::str_subset("data/usdm") |>
@@ -86,7 +86,7 @@ date <-
 
 # Get the highest (worst) drought class in each county
 usdm <-
-  latest |>
+  paste0("https://data.sustainable-fsa.com/usdm-counties-reported/", latest) |>
   arrow::read_parquet() |>
   dplyr::group_by(STATEFP, COUNTYFP) |>
   dplyr::filter(usdm_class == max(usdm_class))

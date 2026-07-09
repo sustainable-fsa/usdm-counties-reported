@@ -39,6 +39,18 @@ s3_prefix      <- Sys.getenv("S3_PREFIX", unset = "usdm-counties-reported")
 ## Pull prior archive state so incremental guards see existing outputs
 s3_pull(s3_bucket_name, paste0(s3_prefix, "/data"), "data")
 
+## Heal weeks previously written empty by the silent-empty-API bug: delete
+## zero-row weekly parquets so they are refetched below (the mirror push
+## with delete = TRUE propagates the repair to S3).
+list.files(file.path("data", "usdm"), full.names = TRUE) %>%
+  purrr::walk(
+    function(f){
+      if(nrow(arrow::read_parquet(f)) == 0L){
+        gate_skip(paste0("Purging empty weekly parquet ", f, " for refetch."))
+        file.remove(f)
+      }
+    })
+
 sf::sf_use_s2(TRUE)
 
 dir.create(
@@ -129,23 +141,35 @@ usdm_get_dates() %>%
         lubridate::stamp_date("1/31/2000",
                               quiet = TRUE)()
       
-      httr2::url_modify(
-        "https://usdmdataservices.unl.edu",
-        path = 
-          file.path(
-            "api",
-            "CountyStatistics",
-            "GetDroughtSeverityStatisticsByAreaPercent"
-          ),
-        query = 
-          list(
-            aoi = 
-              states,
-            startdate = Date,
-            enddate = Date,
-            statisticsType = "2"
-          )) |>
-        readr::read_csv(show_col_types = FALSE) |>
+      dat <-
+        httr2::url_modify(
+          "https://usdmdataservices.unl.edu",
+          path =
+            file.path(
+              "api",
+              "CountyStatistics",
+              "GetDroughtSeverityStatisticsByAreaPercent"
+            ),
+          query =
+            list(
+              aoi =
+                states,
+              startdate = Date,
+              enddate = Date,
+              statisticsType = "2"
+            )) |>
+        readr::read_csv(show_col_types = FALSE)
+
+      ## Freshness gate: zero rows is never legitimate (national area-percent
+      ## stats always include nonzero None rows) — the API just doesn't have
+      ## this week yet. Leave the week unwritten so a later run retries it.
+      if(nrow(dat) == 0L){
+        gate_skip(paste0("NDMC DataServices returned no rows for ", Date,
+                         "; leaving week unwritten for retry."))
+        return(invisible(NULL))
+      }
+
+      dat |>
         dplyr::transmute(FIPS,
                          usdm_date = lubridate::ymd(MapDate),
                          dplyr::across(None:D4)) |>

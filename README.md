@@ -11,7 +11,7 @@ Size](https://img.shields.io/github/repo-size/sustainable-fsa/usdm-counties-repo
 This repository is an archive of weekly US Drought Monitor (USDM) data
 aggregated to the county level as reported by the USDM.
 
-<a href="https://data.sustainable-fsa.com/#/usdm-counties-reported/" target="_blank">📂
+<a href="https://data.sustainable-fsa.com/usdm-counties-reported/" target="_blank">📂
 View the US Drought Monitor county aggregation archive listing here.</a>
 
 The county data archived in this repository were acquired via API

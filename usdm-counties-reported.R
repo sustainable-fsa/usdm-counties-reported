@@ -159,7 +159,7 @@ usdm_get_dates() %>%
               statisticsType = "2"
             )) |>
         readr::read_csv(show_col_types = FALSE)
-
+      
       ## Freshness gate: zero rows is never legitimate (national area-percent
       ## stats always include nonzero None rows) — the API just doesn't have
       ## this week yet. Leave the week unwritten so a later run retries it.
@@ -168,7 +168,7 @@ usdm_get_dates() %>%
                          "; leaving week unwritten for retry."))
         return(invisible(NULL))
       }
-
+      
       dat |>
         dplyr::transmute(FIPS,
                          usdm_date = lubridate::ymd(MapDate),
@@ -189,11 +189,11 @@ usdm_get_dates() %>%
         dplyr::select(GEOID = FIPS, STATEFP, State, COUNTYFP, County, CountyLSAD, 
                       usdm_date, usdm_class, usdm_percent) |>
         dplyr::arrange(GEOID, usdm_date, usdm_class) |>
-          arrow::write_parquet(sink = outfile,
-                               version = "latest",
-                               compression = "zstd",
-                               compression_level = 13,
-                               use_dictionary = TRUE)
+        arrow::write_parquet(sink = outfile,
+                             version = "latest",
+                             compression = "zstd",
+                             compression_level = 13,
+                             use_dictionary = TRUE)
     }
   )
 

@@ -52,8 +52,61 @@ While USDM drought class boundaries are developed without regard to political bo
 
 - `<usdm-counties-reported.R>`: R script that downloads weekly USDM data aggregated to county boundaries.
 - `<usdm-counties-reported.parquet>`: Processed county-level USDM data in a single parquet file.
+- [`<usdm-counties-reported.json>`](https://data.sustainable-fsa.com/usdm-counties-reported/usdm-counties-reported.json): The worst drought class in each county each week, restructured for browsers (see *Output Data* below).
 - `<data/>`: Directory containing processed county-level USDM data.
 - `<README.Rmd>`: This README file, providing an overview and usage instructions.
+
+The `data/` directory and the consolidated Parquet are mirrored to S3 and served
+via CloudFront at <https://data.sustainable-fsa.com/usdm-counties-reported/> —
+that mirror is the archive of record, and the data are not kept in git.
+`usdm-counties-reported.json` is a deliberate exception to that policy: it is
+mirrored to S3 *and* committed to git, so the web maps that read it have a
+small, versioned copy that moves with the repository.
+
+---
+
+## 📤 Output Data
+
+Every weekly table returned by the API is concatenated into
+`usdm-counties-reported.parquet`, the archive of record. The same records,
+reduced to the worst drought class per county and week, are written to
+[`usdm-counties-reported.json`](https://data.sustainable-fsa.com/usdm-counties-reported/usdm-counties-reported.json)
+for web maps.
+
+### `usdm-counties-reported.json`
+
+The same weekly records as the Parquet — reduced from the identical table in the
+same run — restructured for direct use in a browser. It carries the worst
+drought class in each county each week and nothing else; the per-class area
+percents stay in the Parquet. It is what the web maps load, not an
+archive-of-record format: for analysis, use the Parquet.
+
+- **One string per county**: a county's entire history is a single fixed-width
+  string of class codes (`0` = `None` through `5` = `D4`), one character per
+  weekly USDM Tuesday on an implicit axis beginning 2000-01-04. No dates are
+  stored, and a `.` marks a week in which the county is absent from the
+  archive. The file is roughly 4.6 MB raw and about 400 KB gzipped over the
+  wire.
+- **Worst class, no threshold**: the class for a county-week is the maximum
+  over every record present, with no area-percent cutoff — any nonzero-area
+  sliver of a class counts. This matches how
+  [`fsa-lfp-eligibility-derived`](https://sustainable-fsa.com/fsa-lfp-eligibility-derived/)
+  reads the archive.
+- **Dictionary-coded names**: the county keys are the five-character `GEOID`
+  FIPS codes exactly as NDMC reports them, and the county and state names each
+  appear once, in arrays running parallel to the per-county strings. Because
+  the keys are NDMC's own, they include the nine Connecticut planning regions
+  (`09110`–`09190`), which NDMC reports across the full record in place of
+  Connecticut's former counties. Those nine are absent from the 2020 Census
+  county table this archive joins for names, so they carry an empty county
+  name; their state is recovered from the `GEOID` prefix.
+
+The payload is self-describing via its `schema` field (`usdm-max-class/1`), a
+frozen contract with the web map: fields may be added, but existing ones are
+never renamed or reordered without bumping the schema. The same schema serves
+the [`usdm-counties`](https://sustainable-fsa.com/usdm-counties/) and
+[`usdm-counties-fsa-lfp`](https://sustainable-fsa.com/usdm-counties-fsa-lfp/)
+archives; the `dataset` field says which of the three a given payload is.
 
 ---
 
